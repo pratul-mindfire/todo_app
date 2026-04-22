@@ -79,3 +79,29 @@ struct TaskRowView: View {
         return f.string(from: date)
     }
 }
+
+#Preview("TaskRowView") {
+    List {
+        TaskRowView(
+            task: Task(id: UUID(), title: "Buy groceries", dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()), priority: .high, isCompleted: false),
+            onToggle: {}
+        )
+        TaskRowView(
+            task: Task(id: UUID(), title: "Finish report", dueDate: Calendar.current.date(byAdding: .day, value: -1, to: Date()), priority: .medium, isCompleted: true),
+            onToggle: {}
+        )
+        TaskRowView(
+            task: Task(id: UUID(), title: "Plan weekend trip", dueDate: nil, priority: .low, isCompleted: false),
+            onToggle: {}
+        )
+        TaskRowView(
+            task: Task(id: UUID(), title: "Call plumber", dueDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()), priority: .medium, isCompleted: false),
+            onToggle: {}
+        )
+        TaskRowView(
+            task: Task(id: UUID(), title: "Read a book chapter", dueDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()), priority: .low, isCompleted: false),
+            onToggle: {}
+        )
+    }
+}
+
