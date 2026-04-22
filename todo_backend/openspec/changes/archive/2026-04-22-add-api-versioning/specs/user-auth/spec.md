@@ -1,8 +1,5 @@
-# user-auth Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change auth-register-login-jwt. Update Purpose after archive.
-## Requirements
 ### Requirement: User Registration
 The system SHALL allow a new user to register by providing name, email, and password. On success it SHALL persist the user with a bcrypt-hashed password and return a JWT token alongside the user object (excluding password). Email SHALL be treated as case-insensitive for uniqueness checks.
 
@@ -59,4 +56,3 @@ The system SHALL provide a protected endpoint that returns the authenticated use
 #### Scenario: Unauthenticated request
 - **WHEN** a GET request is sent to `/api/v1/auth/me` without an Authorization header or with an invalid token
 - **THEN** the system returns HTTP 401 with `{ success: false, message: "Not authorized" }`
-

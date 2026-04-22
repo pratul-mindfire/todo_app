@@ -11,6 +11,7 @@ beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   await mongoose.connect(mongod.getUri());
   process.env.JWT_SECRET = 'test-secret-key';
+  process.env.API_VERSION = 'v1';
 });
 
 afterAll(async () => {
@@ -172,6 +173,73 @@ describe('GET /api/auth/me', () => {
 
 // ---------------------------------------------------------------------------
 // Auth middleware scenarios
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// API versioning — versioned paths (/api/v1/auth/*)
+// ---------------------------------------------------------------------------
+
+describe('API versioning — versioned paths (/api/v1/auth/*)', () => {
+  it('V.1 versioned register path returns 200', async () => {
+    const res = await request(app).post('/api/v1/auth/register').send(validUser);
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.token).toBeDefined();
+  });
+
+  it('V.2 versioned login path returns 200', async () => {
+    await request(app).post('/api/v1/auth/register').send(validUser);
+    const res = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: validUser.email, password: validUser.password });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.token).toBeDefined();
+  });
+
+  it('V.3 versioned /me path returns 200 with valid token', async () => {
+    const reg = await request(app).post('/api/v1/auth/register').send(validUser);
+    const res = await request(app)
+      .get('/api/v1/auth/me')
+      .set('Authorization', `Bearer ${reg.body.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.user).toMatchObject({ name: validUser.name, email: validUser.email });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// API versioning — backward-compat unversioned paths (/api/auth/*)
+// ---------------------------------------------------------------------------
+
+describe('API versioning — backward-compat unversioned paths (/api/auth/*)', () => {
+  it('V.4 unversioned register still returns 200', async () => {
+    const res = await request(app).post('/api/auth/register').send(validUser);
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('V.5 unversioned login still returns 200', async () => {
+    await request(app).post('/api/auth/register').send(validUser);
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: validUser.email, password: validUser.password });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('V.6 unversioned /me still returns 200 with valid token', async () => {
+    const reg = await request(app).post('/api/auth/register').send(validUser);
+    const res = await request(app)
+      .get('/api/auth/me')
+      .set('Authorization', `Bearer ${reg.body.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Auth middleware — JWT verification
 // ---------------------------------------------------------------------------
 
 describe('Auth middleware — JWT verification', () => {
