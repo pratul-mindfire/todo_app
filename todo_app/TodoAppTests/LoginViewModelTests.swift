@@ -3,14 +3,44 @@ import XCTest
 
 // MARK: - Mock Auth Services
 
+final class StubAuthService: AuthService {
+    var stubToken: String?
+    var stubUser: User?
+
+    init(stubToken: String? = nil, stubUser: User? = nil) {
+        self.stubToken = stubToken
+        self.stubUser = stubUser
+    }
+
+    func login(email: String, password: String) async throws {}
+    func logout() { stubToken = nil; stubUser = nil }
+    var token: String? { stubToken }
+    var currentUser: User? { stubUser }
+}
+
+final class AlwaysNetworkErrorAuthService: AuthService {
+    func login(email: String, password: String) async throws {
+        throw AuthError.network("timeout")
+    }
+    func logout() {}
+    var currentUser: User? { nil }
+    var token: String? { nil }
+}
+
 final class AlwaysSucceedAuthService: AuthService {
     func login(email: String, password: String) async throws {}
+    func logout() {}
+    var currentUser: User? { nil }
+    var token: String? { nil }
 }
 
 final class AlwaysFailAuthService: AuthService {
     func login(email: String, password: String) async throws {
         throw AuthError.invalidCredentials
     }
+    func logout() {}
+    var currentUser: User? { nil }
+    var token: String? { nil }
 }
 
 final class SlowAuthService: AuthService {
@@ -20,6 +50,9 @@ final class SlowAuthService: AuthService {
         didStart = true
         didFinish = true
     }
+    func logout() {}
+    var currentUser: User? { nil }
+    var token: String? { nil }
 }
 
 // MARK: - LoginViewModelTests
@@ -169,5 +202,80 @@ final class LoginViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showForgotPasswordAlert)
         vm.forgotPassword()
         XCTAssertTrue(vm.showForgotPasswordAlert)
+    }
+
+    // MARK: Network Error
+
+    func test_login_networkError_setsErrorMessage() async {
+        let vm = LoginViewModel(authService: AlwaysNetworkErrorAuthService())
+        vm.email = "user@example.com"
+        vm.password = "password"
+        let result = await vm.login()
+        XCTAssertFalse(result)
+        XCTAssertEqual(vm.errorMessage, "timeout")
+    }
+}
+
+// MARK: - AuthViewModelTests
+
+@MainActor
+final class AuthViewModelTests: XCTestCase {
+
+    // MARK: Session Restoration
+
+    func test_authViewModel_init_tokenNil_notAuthenticated() {
+        let vm = AuthViewModel(authService: StubAuthService(stubToken: nil))
+        XCTAssertFalse(vm.isAuthenticated)
+    }
+
+    func test_authViewModel_init_tokenPresent_isAuthenticated() {
+        let vm = AuthViewModel(authService: StubAuthService(stubToken: "abc"))
+        XCTAssertTrue(vm.isAuthenticated)
+    }
+
+    func test_authViewModel_init_tokenPresent_restoresCurrentUser() {
+        let user = User(id: "1", name: "X", email: "x@x.com")
+        let vm = AuthViewModel(authService: StubAuthService(stubToken: "abc", stubUser: user))
+        XCTAssertEqual(vm.currentUser?.name, "X")
+    }
+
+    // MARK: didLoginSuccessfully
+
+    func test_authViewModel_didLoginSuccessfully_setsIsAuthenticated() {
+        let stub = StubAuthService(stubToken: nil)
+        let vm = AuthViewModel(authService: stub)
+        XCTAssertFalse(vm.isAuthenticated)
+        stub.stubToken = "abc"
+        vm.didLoginSuccessfully()
+        XCTAssertTrue(vm.isAuthenticated)
+    }
+
+    func test_authViewModel_didLoginSuccessfully_setsCurrentUser() {
+        let user = User(id: "2", name: "Bob", email: "bob@example.com")
+        let stub = StubAuthService(stubToken: nil)
+        let vm = AuthViewModel(authService: stub)
+        stub.stubToken = "abc"
+        stub.stubUser = user
+        vm.didLoginSuccessfully()
+        XCTAssertEqual(vm.currentUser?.email, "bob@example.com")
+    }
+
+    // MARK: Logout
+
+    func test_authViewModel_logout_clearsIsAuthenticated() {
+        let stub = StubAuthService(stubToken: "abc")
+        let vm = AuthViewModel(authService: stub)
+        XCTAssertTrue(vm.isAuthenticated)
+        vm.logout()
+        XCTAssertFalse(vm.isAuthenticated)
+    }
+
+    func test_authViewModel_logout_clearsCurrentUser() {
+        let user = User(id: "3", name: "Jane", email: "jane@example.com")
+        let stub = StubAuthService(stubToken: "abc", stubUser: user)
+        let vm = AuthViewModel(authService: stub)
+        XCTAssertNotNil(vm.currentUser)
+        vm.logout()
+        XCTAssertNil(vm.currentUser)
     }
 }

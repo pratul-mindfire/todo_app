@@ -6,6 +6,7 @@ enum AuthError: LocalizedError {
     case emptyFields
     case invalidEmailFormat
     case invalidCredentials
+    case network(String)
 
     var errorDescription: String? {
         switch self {
@@ -15,6 +16,8 @@ enum AuthError: LocalizedError {
             return "Please enter a valid email address."
         case .invalidCredentials:
             return "Incorrect email or password."
+        case .network(let message):
+            return message
         }
     }
 }
@@ -23,13 +26,18 @@ enum AuthError: LocalizedError {
 
 protocol AuthService {
     func login(email: String, password: String) async throws
+    func logout()
+    var currentUser: User? { get }
+    var token: String? { get }
 }
 
 // MARK: - MockAuthService
 
 final class MockAuthService: AuthService {
     func login(email: String, password: String) async throws {
-        // Simulate async work without blocking
         guard !email.isEmpty, !password.isEmpty else { throw AuthError.emptyFields }
     }
+    func logout() {}
+    var currentUser: User? { nil }
+    var token: String? { nil }
 }

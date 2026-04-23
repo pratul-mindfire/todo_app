@@ -19,7 +19,7 @@ final class LoginViewModel: ObservableObject {
 
     // MARK: Init
 
-    init(authService: AuthService = MockAuthService()) {
+    init(authService: AuthService = RemoteAuthService()) {
         self.authService = authService
     }
 
