@@ -26,6 +26,9 @@
 		D4E5F6A1B2C3D4E5F6A1B2C3 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B2A1F6E5D4C3B2A1F6E5D4 /* LoginView.swift */; };
 		E1E1E1E1E1E1E1E1E1E1E1E1 /* LoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E2E2E2E2E2E2E2E2E2E2E2 /* LoginViewModelTests.swift */; };
 		E3E3E3E3E3E3E3E3E3E3E3E3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E4E4E4E4E4E4E4E4E4E4E4 /* XCTest.framework */; };
+		AA22222222222222222222AA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11111111111111111111AA /* User.swift */; };
+		CC22222222222222222222CC /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC11111111111111111111CC /* AppConfig.swift */; };
+		BB22222222222222222222BB /* RemoteAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11111111111111111111BB /* RemoteAuthService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +54,9 @@
 		E2E2E2E2E2E2E2E2E2E2E2E2 /* LoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModelTests.swift; sourceTree = "<group>"; };
 		E4E4E4E4E4E4E4E4E4E4E4E4 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E5E5E5E5E5E5E5E5E5E5E5E5 /* TodoAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodoAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA11111111111111111111AA /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		CC11111111111111111111CC /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		BB11111111111111111111BB /* RemoteAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAuthService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +126,7 @@
 				C24BFA544F0B430DBCC4FFDF /* Services */,
 				E15C6254EA3F4E1CB2376E0D /* ViewModels */,
 				1D987B06A86049BAB51EFBDC /* Views */,
+				DD11111111111111111111DD /* Utilities */,
 			);
 			path = TodoApp;
 			sourceTree = "<group>";
@@ -128,8 +135,17 @@
 			isa = PBXGroup;
 			children = (
 				DEA3664398434245B46905EF /* Task.swift */,
+				AA11111111111111111111AA /* User.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		DD11111111111111111111DD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				CC11111111111111111111CC /* AppConfig.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		D3387C330D604B1EB707C60D /* Repository */ = {
@@ -146,6 +162,7 @@
 			children = (
 				4EEAD37681074312B9BF72E1 /* NotificationService.swift */,
 				F6E5D4C3B2A1F6E5D4C3B2A1 /* AuthService.swift */,
+				BB11111111111111111111BB /* RemoteAuthService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -289,6 +306,9 @@
 				B2C3D4E5F6A1B2C3D4E5F6A1 /* AuthViewModel.swift in Sources */,
 				C3D4E5F6A1B2C3D4E5F6A1B2 /* LoginViewModel.swift in Sources */,
 				D4E5F6A1B2C3D4E5F6A1B2C3 /* LoginView.swift in Sources */,
+				AA22222222222222222222AA /* User.swift in Sources */,
+				CC22222222222222222222CC /* AppConfig.swift in Sources */,
+				BB22222222222222222222BB /* RemoteAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

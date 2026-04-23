@@ -105,7 +105,7 @@ struct LoginView: View {
             guard loginAttempt > 0 else { return }
             let success = await viewModel.login()
             if success {
-                authViewModel.isAuthenticated = true
+                authViewModel.didLoginSuccessfully()
             }
         }
         .alert("Feature Coming Soon", isPresented: $viewModel.showForgotPasswordAlert) {
